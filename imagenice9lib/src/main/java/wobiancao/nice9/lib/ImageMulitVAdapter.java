@@ -1,12 +1,14 @@
 package wobiancao.nice9.lib;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.vlayout.VirtualLayoutAdapter;
 import com.alibaba.android.vlayout.VirtualLayoutManager;
@@ -26,6 +28,18 @@ public class ImageMulitVAdapter extends VirtualLayoutAdapter<ImageMulitVAdapter.
     private boolean canDrag;
     private int itemMargin;
     private ImageNice9Layout.ItemDelegate mItemDelegate;
+    int width = 0, height = 0;
+    int imageCount;
+    int displayW =200;
+    private Drawable errorDrawable;
+
+    public int getDisplayW() {
+        return displayW;
+    }
+
+    public void setDisplayW(int displayW) {
+        this.displayW = displayW;
+    }
 //    public ImageMulitVAdapter(@NonNull VirtualLayoutManager layoutManager, List<String> pictures, Context context, boolean canDrag, int itemMagrin) {
 //        super(layoutManager);
 //        this.pictures = pictures;
@@ -35,15 +49,17 @@ public class ImageMulitVAdapter extends VirtualLayoutAdapter<ImageMulitVAdapter.
 //    }
 
 
-    public ImageMulitVAdapter(@NonNull VirtualLayoutManager layoutManager, Context context, boolean canDrag, int itemMargin) {
+    public ImageMulitVAdapter(@NonNull VirtualLayoutManager layoutManager, Context context, boolean canDrag, int itemMargin, Drawable errorDrawable) {
         super(layoutManager);
         this.context = context;
         this.canDrag = canDrag;
         this.itemMargin = itemMargin;
+        this.errorDrawable = errorDrawable;
     }
 
     public void bindData(List<String> pictures){
         this.pictures = pictures;
+        imageCount = pictures.size();
         notifyDataSetChanged();
     }
 
@@ -59,85 +75,61 @@ public class ImageMulitVAdapter extends VirtualLayoutAdapter<ImageMulitVAdapter.
     @Override
     public void onBindViewHolder(ImageViewHolder holder, final int position) {
         VirtualLayoutManager.LayoutParams layoutParams = new VirtualLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int width = 0, height = 0;
-        int imageCount = pictures.size();
-        int displayW = DisplayUtils.getDisplayWidth(context);
         if (imageCount == 1) {
-            width = displayW;
-            height = width;
+            height = displayW;
         } else if (imageCount == 2) {
-            width = displayW / 2;
-            height = width;
+            height = displayW;
         } else if (imageCount == 3) {
-            if (position == 0) {
-                width = (int) (displayW * 0.66);
-                height = width;
-                layoutParams.rightMargin = itemMargin;
-                layoutParams.bottomMargin = itemMargin;
-            } else {
-                if (position == 1 || position == 2) {
-                    if (position == 1) {
-                        layoutParams.bottomMargin = itemMargin / 2;
-                    } else {
-                        layoutParams.bottomMargin = itemMargin;
-                    }
-                }
-                width = (int) ((displayW * 0.33));
-                height = width;
-            }
+            height = (int) ((displayW - itemMargin) * 0.5);
         } else if (imageCount == 4) {
-            if (position == 0) {
-                width = displayW;
-                height = (int) (width * 0.5);
-            } else {
-                width = (int) (displayW * 0.33);
-                height = width;
-            }
+
+            height = (int) ((displayW - itemMargin) * 0.5);
+
         } else if (imageCount == 5) {
             if (position == 0 || position == 1) {
-                width = (int) (displayW * 0.5);
-                height = width;
+                height = (int) ((displayW - itemMargin) * 2/3);
             } else {
-                width = (int) (displayW * 0.33);
-                height = width;
+                height = (int) ((displayW - itemMargin) * 1/3);
             }
         } else if (imageCount == 6) {
-            if (position == 0) {
-                width = (int) (displayW * 0.66);
-                height = width;
-                layoutParams.rightMargin = 10;
-                layoutParams.bottomMargin = 10;
-            } else {
-                if (position == 1 || position == 2) {
-                    if (position == 1) {
-                        layoutParams.bottomMargin = itemMargin / 2;
-                    } else {
-                        layoutParams.bottomMargin = itemMargin;
-                    }
 
-                }
-                width = (int) (displayW * 0.33);
-                height = width;
+            if (position == 0){
+                height =  (displayW - 2*itemMargin) * 2/3;
+
+                layoutParams.rightMargin = itemMargin;
+            }else if ( position >= 3 && position <=5){
+                height =  (displayW - 2*itemMargin) * 1/3;
+            }else if (position == 2){
+                layoutParams.topMargin = itemMargin;
+                height =  (displayW - (displayW - 2*itemMargin) * 1/3 - 2*itemMargin) * 1/2;
+            }else {
+                height =  (displayW - (displayW - 2*itemMargin) * 1/3 - 2*itemMargin) * 1/2;
             }
+
         } else if (imageCount == 7) {
-            if (position == 0) {
-                width = displayW;
-                height = (int) (width * 0.5);
-            } else {
-                width = (int) (displayW * 0.33);
-                height = width;
+
+            if (position <= 1){
+                height = (displayW - 3*itemMargin)*2/4+itemMargin;
+            }else {
+                height = (displayW - 3*itemMargin)/4;
             }
         } else if (imageCount == 8) {
-            if (position == 0 || position == 1) {
-                width = (int) (displayW * 0.5);
-                height = width;
+            if (position == 3 || position == 4) {
+                height = (displayW - 3*itemMargin)*2/4+itemMargin;
             } else {
-                width = (int) (displayW * 0.33);
-                height = width;
+                height = (displayW - 3*itemMargin)/4;
+
             }
         } else {
-            width = (int) (displayW * 0.33);
-            height = width;
+            if (position == 0){
+                layoutParams.rightMargin = itemMargin;
+                height = (displayW - 3*itemMargin)*2/4+itemMargin;
+            }else if (position == 2){
+                layoutParams.topMargin = itemMargin;
+                height = (displayW - 3*itemMargin)/4;
+            }else {
+                height = (displayW - 3*itemMargin)/4;
+            }
         }
         layoutParams.width = width;
         layoutParams.height = height;
@@ -155,9 +147,11 @@ public class ImageMulitVAdapter extends VirtualLayoutAdapter<ImageMulitVAdapter.
             }
         });
         Glide.with(context)
-                .load(imageUrl)
-                .centerCrop()
-                .into(holder.mImageView);
+            .load(imageUrl)
+            .placeholder(errorDrawable)
+            .error(errorDrawable)
+            .centerCrop()
+            .into(holder.mImageView);
     }
 
     @Override
@@ -193,7 +187,7 @@ public class ImageMulitVAdapter extends VirtualLayoutAdapter<ImageMulitVAdapter.
 
         public ImageViewHolder(View itemView) {
             super(itemView);
-            mImageView = (ImageView) itemView.findViewById(R.id.item_mulit_image);
+            mImageView = itemView.findViewById(R.id.item_mulit_image);
         }
     }
 

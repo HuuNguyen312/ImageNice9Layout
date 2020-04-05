@@ -23,11 +23,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
-    testCompile "junit:junit:${JUNIT_VERSION}"
-    compile 'com.wobiancao:imagenice9lib:1.0.1'
+    implementation "androidx.appcompat:appcompat:${SUPPORT_VERSION}"
+    testImplementation "junit:junit:${JUNIT_VERSION}"
+    implementation project(':imagenice9lib')
+//    implementation 'com.wobiancao:imagenice9lib:1.0.1'
 }
